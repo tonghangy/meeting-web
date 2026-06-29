@@ -49,9 +49,9 @@ export default function MeetingEditPage() {
       {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}
       <form onSubmit={onSubmit}>
         <label>标题</label>
-        <input name="title" defaultValue={meeting.title} required />
+        <input type="text" name="title" defaultValue={meeting.title} required />
         <label>说明</label>
-        <input name="description" defaultValue={meeting.description || ''} />
+        <textarea name="description" rows={3} defaultValue={meeting.description || ''} />
         <label>访问范围</label>
         <select name="accessMode" defaultValue={meeting.accessMode}>
           <option value="INVITE_ONLY">指定参会人</option>

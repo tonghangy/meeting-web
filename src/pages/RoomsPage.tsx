@@ -88,6 +88,7 @@ export default function RoomsPage() {
         <h3>我的会议</h3>
         <form className="search-form" onSubmit={onSearch}>
           <input
+            type="text"
             name="keyword"
             value={draftKeyword}
             onChange={(e) => setDraftKeyword(e.target.value)}

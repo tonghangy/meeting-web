@@ -65,7 +65,12 @@ export default function MeetingDetailPage() {
           <tr><th>主持人</th><td>{m.hostUserName}</td></tr>
           <tr><th>状态</th><td>{m.statusDisplay}</td></tr>
           <tr><th>开始</th><td>{m.scheduledStartDisplay}</td></tr>
-          <tr><th>入会链接</th><td><a href={detail.joinLink} target="_blank" rel="noreferrer">{detail.joinLink}</a></td></tr>
+          <tr><th>入会链接</th><td>
+            <a href={detail.joinLink} target="_blank" rel="noreferrer">{detail.joinLink}</a>
+            <p className="hint" style={{ marginTop: 8 }}>
+              分享此链接给他人；需先登录本系统。也可在首页输入会议号 <code>{m.roomName}</code> 加入。
+            </p>
+          </td></tr>
         </tbody>
       </table>
 

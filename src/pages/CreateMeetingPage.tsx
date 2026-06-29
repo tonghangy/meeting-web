@@ -68,7 +68,7 @@ export default function CreateMeetingPage() {
 
       <form onSubmit={onSubmit}>
         <label>会议标题</label>
-        <input name="title" required maxLength={128} placeholder="例如：产品评审会" />
+        <input type="text" name="title" required maxLength={128} placeholder="例如：产品评审会" />
 
         {isScheduled && (
           <>
@@ -80,7 +80,7 @@ export default function CreateMeetingPage() {
         )}
 
         <label>说明（可选）</label>
-        <input name="description" maxLength={512} />
+        <textarea name="description" maxLength={512} rows={3} placeholder="补充会议说明" />
 
         <label>谁能参会</label>
         <select value={accessMode} onChange={(e) => setAccessMode(e.target.value)}>

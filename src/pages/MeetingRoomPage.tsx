@@ -63,7 +63,13 @@ export default function MeetingRoomPage() {
         parentNode: meetRef.current,
         userInfo: { displayName: user!.displayName },
         configOverwrite,
-        interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          SHOW_BRAND_WATERMARK: false,
+          SHOW_POWERED_BY: false,
+          DISABLE_VIDEO_BACKGROUND: false,
+        },
       };
 
       if (bootstrap!.jitsiJwtEnabled && id) {
