@@ -34,7 +34,12 @@ export default function MeetingRoomPage() {
       await loadScript(bootstrap!.externalApiScriptUrl);
 
       const configOverwrite: Record<string, unknown> = {
-        prejoinPageEnabled: true,
+        prejoinConfig: {
+          enabled: false,
+          hideDisplayName: true,
+        },
+        requireDisplayName: false,
+        disableDeepLinking: true,
         startWithAudioMuted: false,
         disableChat: true,
         disableLocalRecording: false,
@@ -75,13 +80,11 @@ export default function MeetingRoomPage() {
       const api = new window.JitsiMeetExternalAPI(bootstrap!.jitsiDomain, options);
       jitsiRef.current = api;
       api.addEventListener('videoConferenceJoined', () => {
-        if (!status) {
-          setStatus(
-            bootstrap!.isHost
-              ? '已入会。主持人请在 Jitsi … 菜单中使用「开始录制」。'
-              : '已入会。'
-          );
-        }
+        setStatus((prev) => prev || (
+          bootstrap!.isHost
+            ? '已入会。主持人请在 Jitsi … 菜单中使用「开始录制」。'
+            : '已入会。'
+        ));
         window.dispatchEvent(new Event('resize'));
       });
     }

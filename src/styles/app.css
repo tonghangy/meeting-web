@@ -340,3 +340,27 @@ th, td {
     border-radius: 8px;
     background: #000;
 }
+
+.meet-join-overlay {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    border-radius: 8px 0 0 8px;
+    color: #fff;
+}
+
+.meet-join-panel {
+    text-align: center;
+    padding: 24px;
+}
+
+.meet-join-panel p {
+    margin: 0 0 12px;
+}
+
+.meet-join-panel .hint {
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
