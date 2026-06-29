@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../api/client';
 import type { Meeting } from '../api/types';
@@ -9,18 +9,44 @@ export default function RoomsPage() {
   const keyword = searchParams.get('keyword') || '';
   const scope = searchParams.get('scope') || 'mine';
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [draftKeyword, setDraftKeyword] = useState(keyword);
+  const [draftScope, setDraftScope] = useState(scope);
   const [roomName, setRoomName] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const loadMeetings = useCallback(async (kw: string, sc: string) => {
+    setLoading(true);
+    setError('');
+    try {
+      const q = new URLSearchParams();
+      if (kw) q.set('keyword', kw);
+      if (sc) q.set('scope', sc);
+      setMeetings(await apiFetch<Meeting[]>(`/meetings?${q.toString()}`));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '加载失败');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const q = new URLSearchParams();
-    if (keyword) q.set('keyword', keyword);
-    if (scope) q.set('scope', scope);
-    apiFetch<Meeting[]>(`/meetings?${q.toString()}`)
-      .then(setMeetings)
-      .catch((e) => setError(e instanceof Error ? e.message : '加载失败'));
-  }, [keyword, scope]);
+    setDraftKeyword(keyword);
+    setDraftScope(scope);
+    loadMeetings(keyword, scope);
+  }, [keyword, scope, loadMeetings]);
+
+  function onSearch(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const kw = draftKeyword.trim();
+    const sc = draftScope || 'mine';
+    if (kw === keyword && sc === scope) {
+      loadMeetings(kw, sc);
+    } else {
+      setSearchParams({ keyword: kw, scope: sc });
+    }
+  }
 
   async function joinByRoom(e: FormEvent) {
     e.preventDefault();
@@ -60,27 +86,32 @@ export default function RoomsPage() {
 
       <div className="card">
         <h3>我的会议</h3>
-        <form
-          className="search-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const fd = new FormData(e.currentTarget);
-            setSearchParams({
-              keyword: String(fd.get('keyword') || ''),
-              scope: String(fd.get('scope') || 'mine'),
-            });
-          }}
-        >
-          <input name="keyword" defaultValue={keyword} placeholder="标题 / 会议号 / 主持人" style={{ maxWidth: 240 }} />
-          <select name="scope" defaultValue={scope}>
+        <form className="search-form" onSubmit={onSearch}>
+          <input
+            name="keyword"
+            value={draftKeyword}
+            onChange={(e) => setDraftKeyword(e.target.value)}
+            placeholder="标题 / 会议号 / 主持人"
+            style={{ maxWidth: 240 }}
+          />
+          <select
+            name="scope"
+            value={draftScope}
+            onChange={(e) => setDraftScope(e.target.value)}
+          >
             <option value="mine">与我相关</option>
             <option value="hosted">我主持的</option>
             <option value="invited">我受邀的</option>
             <option value="open">公开会议</option>
             <option value="all">全部（管理员）</option>
           </select>
-          <button className="btn" type="submit">查询</button>
-          <Link className="btn btn-secondary" to="/rooms">重置</Link>
+          <button className="btn" type="submit" disabled={loading}>
+            {loading ? '查询中…' : '查询'}
+          </button>
+          <Link className="btn btn-secondary" to="/rooms" onClick={() => {
+            setDraftKeyword('');
+            setDraftScope('mine');
+          }}>重置</Link>
         </form>
 
         <table>
