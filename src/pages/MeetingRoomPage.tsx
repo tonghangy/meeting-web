@@ -4,7 +4,7 @@ import { apiFetch } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import type { JitsiTokenResponse, MeetingRoomBootstrap } from '../api/types';
 import ChatPanel from '../components/ChatPanel';
-import { loadScript, type JitsiApi } from '../lib/jitsi';
+import { createJitsiApi, loadScript, type JitsiApi } from '../lib/jitsi';
 
 export default function MeetingRoomPage() {
   const { id } = useParams<{ id: string }>();
@@ -83,7 +83,7 @@ export default function MeetingRoomPage() {
 
       if (disposed) return;
 
-      const api = new window.JitsiMeetExternalAPI(bootstrap!.jitsiDomain, options);
+      const api = createJitsiApi(bootstrap!.jitsiDomain, options);
       jitsiRef.current = api;
       api.addEventListener('videoConferenceJoined', () => {
         setStatus((prev) => prev || (
@@ -152,7 +152,7 @@ export default function MeetingRoomPage() {
           title={chatOpen ? '收起会议交流' : '展开会议交流'}
           onClick={() => setChatOpen((v) => !v)}
         >
-          {chatOpen ? '◀' : '▶'}
+          {chatOpen ? '▶' : '◀'}
         </button>
         {chatOpen && id && <ChatPanel meetingId={id} />}
       </div>

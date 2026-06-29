@@ -23,6 +23,7 @@ export interface Meeting {
   myRoleLabel: string;
   host: boolean;
   canJoinNow: boolean;
+  canEdit: boolean;
   description?: string;
   scheduledStart?: string;
   scheduledEnd?: string;

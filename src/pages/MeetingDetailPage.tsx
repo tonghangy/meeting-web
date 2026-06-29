@@ -20,22 +20,6 @@ export default function MeetingDetailPage() {
     load().catch((e) => setError(e instanceof Error ? e.message : '加载失败'));
   }, [id]);
 
-  async function addInvitee(userId: string) {
-    if (!id) return;
-    await apiFetch(`/meetings/${id}/invitees`, {
-      method: 'POST',
-      body: JSON.stringify({ userId }),
-    });
-    await load();
-    setMessage('已添加参会人');
-  }
-
-  async function removeInvitee(userId: string) {
-    if (!id) return;
-    await apiFetch(`/meetings/${id}/invitees/${userId}`, { method: 'DELETE' });
-    await load();
-  }
-
   async function remind(userId: string) {
     if (!id) return;
     await apiFetch(`/meetings/${id}/invitees/${userId}/remind`, { method: 'POST' });
@@ -65,6 +49,7 @@ export default function MeetingDetailPage() {
           <tr><th>主持人</th><td>{m.hostUserName}</td></tr>
           <tr><th>状态</th><td>{m.statusDisplay}</td></tr>
           <tr><th>开始</th><td>{m.scheduledStartDisplay}</td></tr>
+          <tr><th>访问范围</th><td>{m.accessMode === 'ALL_USERS' ? '所有登录用户' : '指定参会人'}</td></tr>
           <tr><th>入会链接</th><td>
             <a href={detail.joinLink} target="_blank" rel="noreferrer">{detail.joinLink}</a>
             <p className="hint" style={{ marginTop: 8 }}>
@@ -83,12 +68,13 @@ export default function MeetingDetailPage() {
         <Link className="btn btn-secondary" to="/rooms">返回列表</Link>
       </div>
 
-      {detail.canManage && m.accessMode === 'INVITE_ONLY' && (
+      {m.accessMode === 'INVITE_ONLY' && detail.invitees.length > 0 && (
         <div style={{ marginTop: 24 }}>
           <h3>参会人</h3>
+          <p className="hint">添加或移除参会人请使用「编辑」。</p>
           <table>
             <thead>
-              <tr><th>用户</th><th>状态</th><th>最近提醒</th><th></th></tr>
+              <tr><th>用户</th><th>状态</th><th>最近提醒</th>{detail.canManage && <th></th>}</tr>
             </thead>
             <tbody>
               {detail.invitees.map((inv) => (
@@ -96,29 +82,17 @@ export default function MeetingDetailPage() {
                   <td>{inv.userName}</td>
                   <td>{inv.status}</td>
                   <td>{inv.lastRemindedDisplay || '-'}</td>
-                  <td>
-                    <button type="button" className="btn btn-sm btn-secondary" onClick={() => remind(inv.userId)}>提醒</button>
-                    <button type="button" className="btn btn-sm btn-outline" onClick={() => removeInvitee(inv.userId)}>移除</button>
-                  </td>
+                  {detail.canManage && (
+                    <td>
+                      <button type="button" className="btn btn-sm btn-secondary" onClick={() => remind(inv.userId)}>
+                        提醒
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
-
-          <h4 style={{ marginTop: 16 }}>添加参会人</h4>
-          <div className="checkbox-list">
-            {detail.inviteCandidates.map((u) => (
-              <button
-                key={u.id}
-                type="button"
-                className="btn btn-sm btn-outline"
-                style={{ margin: 4 }}
-                onClick={() => addInvitee(u.id)}
-              >
-                + {u.displayName}
-              </button>
-            ))}
-          </div>
         </div>
       )}
     </div>
