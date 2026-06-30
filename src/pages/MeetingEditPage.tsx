@@ -41,12 +41,12 @@ export default function MeetingEditPage() {
   }
 
   if (!meeting && !error) return <p className="hint">加载中…</p>;
-  if (!meeting) return <p className="hint" style={{ color: '#dc2626' }}>{error}</p>;
+  if (!meeting) return <p className="hint hint-danger">{error}</p>;
 
   return (
-    <div className="card" style={{ maxWidth: 640 }}>
+    <div className="card form-card">
       <h2>编辑会议</h2>
-      {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}
+      {error && <p className="hint hint-danger">{error}</p>}
       <form onSubmit={onSubmit}>
         <label>标题</label>
         <input name="title" defaultValue={meeting.title} required />
@@ -65,8 +65,10 @@ export default function MeetingEditPage() {
             <input name="scheduledEnd" type="datetime-local" />
           </>
         )}
-        <button className="btn" type="submit">保存</button>
-        <Link className="btn btn-secondary" to={`/meeting/${id}/detail`} style={{ marginLeft: 8 }}>取消</Link>
+        <div className="form-actions">
+          <button className="btn" type="submit">保存</button>
+          <Link className="btn btn-secondary" to={`/meeting/${id}/detail`}>取消</Link>
+        </div>
       </form>
     </div>
   );

@@ -112,7 +112,7 @@ export default function MeetingRoomPage() {
   if (error) {
     return (
       <div className="container">
-        <p className="hint" style={{ color: '#dc2626' }}>{error}</p>
+        <p className="hint hint-danger">{error}</p>
         <Link className="btn btn-secondary" to="/rooms">返回</Link>
       </div>
     );
@@ -125,7 +125,7 @@ export default function MeetingRoomPage() {
   return (
     <div className="container container-wide meeting-page">
       <div className="toolbar">
-        <h2 style={{ margin: 0 }}>{bootstrap.title}</h2>
+        <h2 className="toolbar-title">{bootstrap.title}</h2>
         <span className="hint">会议号：{bootstrap.roomName}</span>
         <span className="hint">{bootstrap.isHost ? '你是主持人' : '你是参会者'}</span>
         <Link className="btn btn-secondary" to={`/meeting/${id}/detail`}>会议详情</Link>

@@ -2,7 +2,7 @@
 
 ## 1. Design Goal
 
-This redesign makes the meeting detail page feel like a professional SaaS workbench: clearer hierarchy, stronger status communication, denser but readable operational data, and a maintainable multi-theme system. The page must keep all existing business behavior, support theme switching, and work well on Huawei MatePad, phones, and desktop screens.
+This redesign makes the meeting detail page feel like a professional SaaS workbench: clearer hierarchy, stronger status communication, denser but readable operational data, and a maintainable multi-theme system. The page must keep all existing business behavior, support theme switching, and work well on Huawei MatePad, phones, and desktop screens. Source styles stay in px for maintainability, while Vite/PostCSS converts production CSS to rem.
 
 ## 2. Reference Page Design Language
 
@@ -41,15 +41,18 @@ The default `reference-inspired` theme should feel closest to the screenshot, wh
 
 ## 5. Layout Rules
 
-- Desktop: use a constrained workbench container up to about 1440px. Place the hero at the top, then a two-column grid with the core information as the main column and actions/management summary as the side rail.
-- MatePad landscape: keep the two-column layout when width permits, but reduce gaps and ensure all touch targets are at least 44px tall.
-- MatePad portrait and mobile: collapse into a single column. Convert dense tables into stacked cards or definition-list style blocks.
-- Main/side ratio: main content should take roughly 2fr and the side rail 1fr on wide screens.
+- Desktop: `min-width: 1367px`. Use a constrained workbench container up to about 1440px. Place the hero at the top, then a two-column grid with the core information as the main column and actions/management summary as the side rail.
+- MatePad Pro 2K landscape: `961px <= width <= 1366px`. A 2560 x 1600 physical display is treated as roughly a 1280 x 800 CSS viewport, so the page keeps the two-column workbench, caps content around 1280px, reduces gaps, and uses a `minmax(0, 1.7fr) minmax(280px, 0.8fr)` main/side grid.
+- MatePad Pro 2K portrait: `761px <= width <= 960px`. The same device is treated as roughly an 800 x 1280 CSS viewport, so the meeting workbench becomes single column while action/status cards can sit in a two-card grid when space allows.
+- Phone: `width <= 760px`; small phone: `width <= 430px`. Collapse into a single column. Convert dense tables into stacked cards or horizontally scrollable table regions when the underlying markup is still tabular.
+- Main/side ratio: main content should take roughly 2fr and the side rail 1fr on wide desktop, then tighten to 1.7fr / 0.8fr on MatePad landscape.
 - Card/panel spacing: use 16px to 24px gaps, following the 4px spacing grid.
-- Sticky rules: side rail can be sticky on desktop only; never sticky on small screens.
+- Sticky rules: side rail can be sticky on desktop and MatePad landscape; never sticky on portrait tablet or phones.
 - Long content: links and long room names must wrap with `overflow-wrap: anywhere`; no horizontal page overflow is allowed.
 
 ## 6. Design Tokens
+
+Unit strategy: write source CSS in px, then convert build output to rem with `postcss-pxtorem` using `rootValue: 16`. Hairline borders and grid lines stay as `1px` through `minPixelValue: 2`. Media query breakpoints stay in px with `mediaQuery: false`, because responsive ranges should match stable CSS viewport widths rather than scale with the root font size.
 
 ### Color Tokens
 
@@ -140,12 +143,12 @@ Dark reading and analysis mode. Use less cyan saturation than the reference them
 ## 8. Component Guidelines
 
 - Page shell: contains global navigation and page content. Use responsive padding, max width, and no horizontal overflow.
-- Header: product label, user identity, route actions, and theme switcher. Wrap on small screens and keep touch targets at least 40px.
+- Header: product label, user identity, route actions, and theme switcher. Wrap on small screens and keep primary touch targets at least 44px.
 - Breadcrumb: optional for deeper flows; muted text, compact spacing, and clear current page state.
 - Meeting hero section: title, status, host/time/room summary, and primary action. Desktop can use horizontal alignment; mobile stacks.
 - Status badge: compact pill or edge-accent badge. Use text plus color, never color alone.
 - Metadata item: icon, label, value. Use muted label, strong value, and wrapping for long links.
-- Participant chip: rounded bordered chip with name and optional role/status. Maintain 40px minimum height on touch devices.
+- Participant chip: rounded bordered chip with name and optional role/status. Maintain 44px minimum height on touch devices.
 - Insight card: future backend-backed section only. Use elevated surface and short conclusion text when data exists.
 - Summary card: future backend-backed section only. Use readable line length and relaxed line height.
 - Action item card: future backend-backed section only. Include owner, due time, and state when data exists.
@@ -166,12 +169,14 @@ Dark reading and analysis mode. Use less cyan saturation than the reference them
 - Keyboard operation must work for links, buttons, and theme controls.
 - Icon-only buttons must have `aria-label`; icon plus text is preferred for key actions.
 - Status cannot rely on color alone; include readable text such as "进行中" or "待开始".
-- Mobile touch targets must be at least 40px tall, with 44px preferred for MatePad and phones.
+- Mobile and MatePad touch targets must be at least 44px tall for primary controls.
 
 ## 10. Implementation Notes
 
 - CSS tokens and theme presets live in `src/styles/app.css` under `:root` and `html[data-theme=...]`.
+- Build-time px-to-rem conversion is configured in `postcss.config.cjs` with `postcss-pxtorem`; source files remain px-based and no runtime JS changes `html` font size.
+- Breakpoints remain px-based: desktop `1367px+`, MatePad landscape `961px-1366px`, MatePad portrait `761px-960px`, phone `<=760px`, and small phone `<=430px`.
 - Theme switching is implemented with `ThemeProvider`, `useTheme`, and `ThemeSwitcher`. The selected theme is stored in `localStorage` under `meeting-web-theme`.
 - Meeting detail remains in `src/pages/MeetingDetailPage.tsx`, split into local presentation components to avoid over-expanding the file tree.
-- Files changed: `design.md`, `package.json`, `package-lock.json`, `src/context/ThemeContext.tsx`, `src/components/ThemeSwitcher.tsx`, `src/components/AppLayout.tsx`, `src/main.tsx`, `src/pages/MeetingDetailPage.tsx`, and `src/styles/app.css`.
+- Files changed for the design system include `design.md`, `package.json`, `package-lock.json`, `src/context/ThemeContext.tsx`, `src/components/ThemeSwitcher.tsx`, `src/components/AppLayout.tsx`, `src/main.tsx`, `src/pages/MeetingDetailPage.tsx`, and `src/styles/app.css`. The MatePad rem adaptation additionally adds `postcss.config.cjs` and updates responsive CSS/form utility classes.
 - Existing routes, API paths, auth flow, meeting actions, and backend response types remain unchanged.

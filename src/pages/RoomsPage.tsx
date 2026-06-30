@@ -66,8 +66,8 @@ export default function RoomsPage() {
 
   return (
     <>
-      {message && <p className="hint" style={{ color: '#15803d' }}>{message}</p>}
-      {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}
+      {message && <p className="hint hint-success">{message}</p>}
+      {error && <p className="hint hint-danger">{error}</p>}
 
       <div className="card">
         <h3>输入会议号加入</h3>
@@ -78,7 +78,7 @@ export default function RoomsPage() {
             onChange={(e) => setRoomName(e.target.value)}
             placeholder="room-xxxxxxxxxxxx"
             required
-            style={{ maxWidth: 280 }}
+            className="join-room-input"
           />
           <button className="btn" type="submit">加入</button>
         </form>
@@ -92,7 +92,7 @@ export default function RoomsPage() {
             value={draftKeyword}
             onChange={(e) => setDraftKeyword(e.target.value)}
             placeholder="标题 / 会议号 / 主持人"
-            style={{ maxWidth: 240 }}
+            className="rooms-search-input"
           />
           <select
             name="scope"
