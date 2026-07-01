@@ -109,7 +109,7 @@ export default function MeetingEditPage() {
   const invitedIds = new Set(detail.invitees.map((i) => i.userId));
 
   return (
-    <div className="card" style={{ maxWidth: 640 }}>
+    <div className="card form-card">
       <h2>编辑会议</h2>
       {message && <p className="hint" style={{ color: '#15803d' }}>{message}</p>}
       {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}

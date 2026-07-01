@@ -40,8 +40,8 @@ export default function AdminUsersPage() {
   return (
     <>
       <h2>用户管理</h2>
-      {message && <p className="hint" style={{ color: '#15803d' }}>{message}</p>}
-      {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}
+      {message && <p className="hint hint-success">{message}</p>}
+      {error && <p className="hint hint-danger">{error}</p>}
 
       <div className="card">
         <h3>创建用户</h3>

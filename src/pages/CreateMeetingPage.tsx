@@ -61,10 +61,10 @@ export default function CreateMeetingPage() {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 640 }}>
+    <div className="card form-card">
       <h2>{isScheduled ? '预定会议' : '快速会议'}</h2>
       <p className="user-banner">本次创建的会议<strong>主持人将是你</strong>。</p>
-      {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}
+      {error && <p className="hint hint-danger">{error}</p>}
 
       <form onSubmit={onSubmit}>
         <label>会议标题</label>
@@ -109,11 +109,11 @@ export default function CreateMeetingPage() {
           </div>
         )}
 
-        <div style={{ marginTop: 16 }}>
+        <div className="form-actions">
           <button className="btn" type="submit" disabled={loading}>
             {loading ? '创建中…' : '创建'}
           </button>
-          <Link className="btn btn-secondary" to="/rooms" style={{ marginLeft: 8 }}>返回</Link>
+          <Link className="btn btn-secondary" to="/rooms">返回</Link>
         </div>
       </form>
     </div>

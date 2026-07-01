@@ -33,7 +33,7 @@ export default function LoginPage() {
 
   return (
     <div className="container">
-      <div className="card" style={{ maxWidth: 400, margin: '80px auto' }}>
+      <div className="card login-card">
         <h2>会议系统登录</h2>
         <p className="hint">演示账号：admin / admin123</p>
         <form onSubmit={onSubmit}>
@@ -44,7 +44,7 @@ export default function LoginPage() {
           <button className="btn" type="submit" disabled={loading}>
             {loading ? '登录中…' : '登录'}
           </button>
-          {error && <p className="hint" style={{ color: '#dc2626' }}>{error}</p>}
+          {error && <p className="hint hint-danger">{error}</p>}
         </form>
       </div>
     </div>
