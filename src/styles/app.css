@@ -268,6 +268,7 @@ textarea {
     width: 100%;
 }
 
+input:not([type]),
 input[type=text],
 input[type=password],
 input[type=datetime-local],
@@ -685,6 +686,7 @@ th {
 
 .metadata-item dd a {
     display: inline-flex;
+    min-height: 40px;
     max-width: 100%;
     align-items: center;
     gap: var(--space-2);
@@ -1143,7 +1145,7 @@ th {
     }
 
     .participant-actions .btn-sm {
-        min-height: 40px;
+        min-height: 44px;
     }
 
     .theme-option,
@@ -1197,6 +1199,10 @@ th {
         justify-content: flex-start;
     }
 
+    .participant-actions .btn {
+        min-height: 44px;
+    }
+
     .theme-option,
     .participant-chip {
         min-height: 44px;
@@ -1220,22 +1226,31 @@ th {
     }
 
     .toolbar-brand {
+        flex: 0 0 100%;
         min-width: 0;
         width: 100%;
     }
 
+    .toolbar {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
     .toolbar-actions {
         display: grid;
+        flex: 0 0 100%;
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .toolbar-actions .btn,
     .theme-option {
+        min-height: 44px;
         width: 100%;
         white-space: normal;
     }
 
     .theme-switcher {
+        flex: 0 0 100%;
         flex-wrap: wrap;
         margin-left: 0;
     }
@@ -1290,6 +1305,7 @@ th {
 
     .participant-actions .btn {
         flex: 1;
+        min-height: 44px;
     }
 
     .candidate-list {
