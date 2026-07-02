@@ -325,11 +325,6 @@ export default function MeetingDetailPage() {
     load().catch((e) => setError(e instanceof Error ? e.message : '加载失败'));
   }, [id]);
 
-  async function remind(userId: string) {
-    if (!id) return;
-    await apiFetch(`/meetings/${id}/invitees/${userId}/remind`, { method: 'POST' });
-    setMessage('已记录提醒，请通知该用户入会');
-    await load();
   async function runAction(action: () => Promise<void>, successMessage?: string) {
     setError('');
     setMessage('');

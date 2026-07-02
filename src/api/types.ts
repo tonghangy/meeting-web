@@ -1,7 +1,10 @@
 export const TOKEN_KEY = 'meetingAuthToken';
 
-export const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, '') || '/app/api';
+/** VITE_API_BASE=站点根，如 http://host:8099；未设则用同源 /app/api */
+// const API_ORIGIN = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+// export const API_BASE = API_ORIGIN ? `${API_ORIGIN}/app/api` : '/app/api';
 
+export const API_BASE = 'https://43.143.218.217/app/api';
 export interface UserInfo {
   userId: string;
   username: string;
