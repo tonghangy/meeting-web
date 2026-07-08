@@ -1,10 +1,8 @@
 export const TOKEN_KEY = 'meetingAuthToken';
 
-/** VITE_API_BASE=站点根，如 http://host:8099；未设则用同源 /app/api */
-// const API_ORIGIN = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
-// export const API_BASE = API_ORIGIN ? `${API_ORIGIN}/app/api` : '/app/api';
-
-export const API_BASE = 'https://43.143.218.217/app/api';
+/** 本地 dev：同源 /app/api，由 Vite 代理到 http://127.0.0.1:8088/app/api */
+const API_ORIGIN = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+export const API_BASE = API_ORIGIN ? `${API_ORIGIN}/app/api` : '/app/api';
 export interface UserInfo {
   userId: string;
   username: string;

@@ -1,25 +1,33 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '../api/client';
 import type { UserSummary } from '../api/types';
+import Toast, { type ToastKind } from '../components/Toast';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserSummary[]>([]);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [toast, setToast] = useState<{ message: string; kind: ToastKind } | null>(null);
+
+  const showToast = useCallback((message: string, kind: ToastKind = 'success') => {
+    setToast({ message, kind });
+  }, []);
+
+  const closeToast = useCallback(() => {
+    setToast(null);
+  }, []);
 
   async function load() {
     setUsers(await apiFetch<UserSummary[]>('/admin/users'));
   }
 
   useEffect(() => {
-    load().catch((e) => setError(e instanceof Error ? e.message : '加载失败'));
-  }, []);
+    load().catch((e) => showToast(e instanceof Error ? e.message : '加载失败', 'error'));
+  }, [showToast]);
 
   async function onCreate(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError('');
-    setMessage('');
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    closeToast();
+    const fd = new FormData(form);
     try {
       await apiFetch('/admin/users', {
         method: 'POST',
@@ -29,19 +37,21 @@ export default function AdminUsersPage() {
           password: String(fd.get('password') || ''),
         }),
       });
-      e.currentTarget.reset();
-      setMessage('用户创建成功');
+      form.reset();
+      showToast('用户创建成功', 'success');
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '创建失败');
+      showToast(err instanceof Error ? err.message : '创建失败', 'error');
     }
   }
 
   return (
     <>
+      {toast && (
+        <Toast message={toast.message} kind={toast.kind} onClose={closeToast} />
+      )}
+
       <h2>用户管理</h2>
-      {message && <p className="hint hint-success">{message}</p>}
-      {error && <p className="hint hint-danger">{error}</p>}
 
       <div className="card">
         <h3>创建用户</h3>
