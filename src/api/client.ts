@@ -1,5 +1,7 @@
 import { API_BASE, TOKEN_KEY, type ApiError } from './types';
 
+export const AUTH_EXPIRED_EVENT = 'meeting-auth-expired';
+
 export class ApiClientError extends Error {
   status: number;
 
@@ -9,7 +11,7 @@ export class ApiClientError extends Error {
   }
 }
 
-function getToken(): string | null {
+export function getToken(): string | null {
   return sessionStorage.getItem(TOKEN_KEY);
 }
 
@@ -68,6 +70,10 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
 
   const res = await fetch(`${API_BASE}${path}`, { ...init, headers });
   if (!res.ok) {
+    if (res.status === 401 && token && !path.startsWith('/auth/')) {
+      clearToken();
+      window.dispatchEvent(new Event(AUTH_EXPIRED_EVENT));
+    }
     throw new ApiClientError(res.status, await parseError(res));
   }
   if (res.status === 204) {

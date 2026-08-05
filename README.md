@@ -74,3 +74,21 @@ Jitsi 仍由根路径 `/` 提供，不变。
 | `/app/meeting/:id/edit` | 编辑会议 |
 | `/app/playback` | 回放 |
 | `/app/admin/users` | 用户管理（管理员） |
+
+## 嵌入地图时的免登录
+
+meeting-web 被地图 iframe 嵌入时，`AuthProvider` 会最长等待父页 token 5 秒。父页通过以下消息传递已校验的会议 token：
+
+```json
+{
+  "type": "MEETING_AUTH_INIT",
+  "version": 1,
+  "payload": {
+    "token": "<meeting-token>"
+  }
+}
+```
+
+meeting-web 只接受 `event.source === window.parent` 且结构有效的初始化消息，再通过 `/auth/me` 校验 token。它会向父页回传 `MEETING_AUTH_READY`、`MEETING_AUTH_ACCEPTED`、`MEETING_AUTH_REJECTED`、`MEETING_AUTH_EXPIRED` 或 `MEETING_AUTH_LOGOUT`。消息和 URL 均不携带明文密码。
+
+超时未收到父页 token 时，保留原有独立登录流程。
