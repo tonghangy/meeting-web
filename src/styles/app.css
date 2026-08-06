@@ -481,10 +481,49 @@ th {
 }
 
 .toolbar {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--space-4);
     margin-bottom: var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 58%, transparent), transparent),
+        var(--color-surface);
+    box-shadow: var(--shadow-md);
+}
+
+.toolbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 28px 28px;
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 62%);
+    mask-image: linear-gradient(90deg, #000 0%, transparent 62%);
+}
+
+.toolbar::after {
+    content: '';
+    position: absolute;
+    left: var(--space-4);
+    right: var(--space-4);
+    bottom: 0;
+    height: 2px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(
+        90deg,
+        var(--color-primary),
+        color-mix(in srgb, var(--color-primary) 25%, transparent)
+    );
+    opacity: 0.7;
 }
 
 .toolbar-brand {
@@ -498,6 +537,7 @@ th {
     margin: 0;
     font-size: var(--font-size-xl);
     line-height: var(--line-height-tight);
+    letter-spacing: 0.08em;
 }
 
 .toolbar-title {
@@ -514,6 +554,9 @@ th {
     border-radius: var(--radius-lg);
     background: var(--color-primary-soft);
     color: var(--color-primary);
+    box-shadow:
+        0 0 16px var(--color-primary-soft),
+        inset 0 0 10px color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
 .toolbar-actions {

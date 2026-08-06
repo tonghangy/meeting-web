@@ -1,10 +1,10 @@
-import { CalendarClock, LogOut, PlayCircle, Radio, ShieldCheck, Video } from 'lucide-react';
+import { CalendarClock, PlayCircle, Radio, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ThemeSwitcher from './ThemeSwitcher';
 
 export default function AppLayout() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <header className="toolbar">
@@ -34,16 +34,6 @@ export default function AppLayout() {
           <PlayCircle aria-hidden="true" size={16} />
           我的回放
         </Link>
-        {user?.admin && (
-          <Link className="btn btn-outline" to="/admin/users">
-            <ShieldCheck aria-hidden="true" size={16} />
-            用户管理
-          </Link>
-        )}
-        <button type="button" className="btn btn-outline" onClick={() => logout()}>
-          <LogOut aria-hidden="true" size={16} />
-          退出
-        </button>
       </nav>
       <ThemeSwitcher />
     </header>
